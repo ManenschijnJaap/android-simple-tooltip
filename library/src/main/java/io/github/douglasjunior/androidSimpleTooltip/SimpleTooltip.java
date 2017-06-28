@@ -111,6 +111,7 @@ public class SimpleTooltip implements PopupWindow.OnDismissListener {
     private final float mMargin;
     private final float mPadding;
     private final float mAnimationPadding;
+    private final float mLeftPadding, mTopPadding, mRightPadding, mBottomPadding;
     private final long mAnimationDuration;
     private final float mArrowWidth;
     private final float mArrowHeight;
@@ -147,7 +148,10 @@ public class SimpleTooltip implements PopupWindow.OnDismissListener {
         mFocusable = builder.focusable;
         mRootView = (ViewGroup) mAnchorView.getRootView();
         mHighlightShape = builder.highlightShape;
-
+        mTopPadding = builder.topPadding;
+        mLeftPadding = builder.leftPadding;
+        mRightPadding = builder.rightPadding;
+        mBottomPadding = builder.bottomPadding;
         init();
     }
 
@@ -241,7 +245,11 @@ public class SimpleTooltip implements PopupWindow.OnDismissListener {
                 tv.setText(mText);
         }
 
-        mContentView.setPadding((int) mPadding, (int) mPadding, (int) mPadding, (int) mPadding);
+        if (mRightPadding < 0 && mTopPadding < 0 && mLeftPadding < 0 && mBottomPadding < 0) {
+            mContentView.setPadding((int) mPadding, (int) mPadding, (int) mPadding, (int) mPadding);
+        } else {
+            mContentView.setPadding((int) mLeftPadding,(int) mTopPadding,(int) mRightPadding,(int) mBottomPadding);
+        }
 
         LinearLayout linearLayout = new LinearLayout(mContext);
         linearLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -552,6 +560,7 @@ public class SimpleTooltip implements PopupWindow.OnDismissListener {
         private boolean animated = false;
         private float margin = -1;
         private float padding = -1;
+        private float topPadding, leftPadding, bottomPadding, rightPadding = -1;
         private float animationPadding = -1;
         private OnDismissListener onDismissListener;
         private OnShowListener onShowListener;
@@ -883,6 +892,14 @@ public class SimpleTooltip implements PopupWindow.OnDismissListener {
          */
         public Builder padding(float padding) {
             this.padding = padding;
+            return this;
+        }
+
+        public Builder padding(float leftPadding, float topPadding, float rightPadding, float bottomPadding) {
+            this.leftPadding = leftPadding;
+            this.rightPadding = rightPadding;
+            this.topPadding = topPadding;
+            this.bottomPadding = bottomPadding;
             return this;
         }
 
