@@ -311,7 +311,11 @@ public class SimpleTooltip implements PopupWindow.OnDismissListener {
 
         LinearLayout.LayoutParams contentViewParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0);
         contentViewParams.gravity = Gravity.CENTER;
-        mContentView.setLayoutParams(contentViewParams);
+        if (extraLayout == null) {
+            mContentView.setLayoutParams(contentViewParams);
+        } else {
+            extraLayout.setLayoutParams(contentViewParams);
+        }
 
         if (mDismissOnInsideTouch || mDismissOnOutsideTouch)
             mContentView.setOnTouchListener(mPopupWindowTouchListener);
