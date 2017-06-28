@@ -118,6 +118,7 @@ public class SimpleTooltip implements PopupWindow.OnDismissListener {
     private final boolean mFocusable;
     private boolean dismissed = false;
     private int mHighlightShape = OverlayView.HIGHLIGHT_SHAPE_OVAL;
+    private final View mExtraView;
 
 
     private SimpleTooltip(Builder builder) {
@@ -152,6 +153,7 @@ public class SimpleTooltip implements PopupWindow.OnDismissListener {
         mLeftPadding = builder.leftPadding;
         mRightPadding = builder.rightPadding;
         mBottomPadding = builder.bottomPadding;
+        mExtraView = builder.extraView;
         init();
     }
 
@@ -254,6 +256,30 @@ public class SimpleTooltip implements PopupWindow.OnDismissListener {
         LinearLayout linearLayout = new LinearLayout(mContext);
         linearLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         linearLayout.setOrientation(mArrowDirection == ArrowDrawable.LEFT || mArrowDirection == ArrowDrawable.RIGHT ? LinearLayout.HORIZONTAL : LinearLayout.VERTICAL);
+        LinearLayout extraLayout = null;
+        if (mExtraView != null){
+            //If there is an extra view to be drawn, we need some magic to make sure the view is always in the right place
+            if(mArrowDirection == ArrowDrawable.LEFT || mArrowDirection == ArrowDrawable.RIGHT) {
+                //Extra view always goes on top
+                extraLayout = new LinearLayout(mContext);
+                linearLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                extraLayout.setOrientation(LinearLayout.VERTICAL);
+                extraLayout.addView(mExtraView);
+                extraLayout.addView(mContentView);
+            } else {
+                extraLayout = new LinearLayout(mContext);
+                linearLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                extraLayout.setOrientation(LinearLayout.VERTICAL);
+                if (mArrowDirection == ArrowDrawable.BOTTOM) {
+                    extraLayout.addView(mExtraView);
+                    extraLayout.addView(mContentView);
+                } else {
+                    extraLayout.addView(mContentView);
+                    extraLayout.addView(mExtraView);
+                }
+            }
+        }
+
         int layoutPadding = (int) (mAnimated ? mAnimationPadding : 0);
         linearLayout.setPadding(layoutPadding, layoutPadding, layoutPadding, layoutPadding);
 
@@ -272,14 +298,15 @@ public class SimpleTooltip implements PopupWindow.OnDismissListener {
             mArrowView.setLayoutParams(arrowLayoutParams);
 
             if (mArrowDirection == ArrowDrawable.BOTTOM || mArrowDirection == ArrowDrawable.RIGHT) {
-                linearLayout.addView(mContentView);
+
+                linearLayout.addView(extraLayout == null ? mContentView : extraLayout);
                 linearLayout.addView(mArrowView);
             } else {
                 linearLayout.addView(mArrowView);
-                linearLayout.addView(mContentView);
+                linearLayout.addView(extraLayout == null ? mContentView : extraLayout);
             }
         } else {
-            linearLayout.addView(mContentView);
+            linearLayout.addView(extraLayout == null ? mContentView : extraLayout);
         }
 
         LinearLayout.LayoutParams contentViewParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0);
@@ -572,6 +599,7 @@ public class SimpleTooltip implements PopupWindow.OnDismissListener {
         private float arrowWidth;
         private boolean focusable;
         private int highlightShape = OverlayView.HIGHLIGHT_SHAPE_OVAL;
+        private View extraView = null;
 
         public Builder(Context context) {
             this.context = context;
@@ -1067,6 +1095,11 @@ public class SimpleTooltip implements PopupWindow.OnDismissListener {
          */
         public Builder overlayOffset(@Dimension float overlayOffset) {
             this.overlayOffset = overlayOffset;
+            return this;
+        }
+
+        public Builder extraView(View view) {
+            this.extraView = view;
             return this;
         }
     }
