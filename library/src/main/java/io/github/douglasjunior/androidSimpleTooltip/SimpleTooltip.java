@@ -182,7 +182,6 @@ public class SimpleTooltip implements PopupWindow.OnDismissListener {
             @Override
             public void run() {
                 if (mRootView.isShown()) {
-                    mPopupWindow.setAnimationStyle(R.style.AnimationPopup);
                     mPopupWindow.showAtLocation(mRootView, Gravity.NO_GRAVITY, mRootView.getWidth(), mRootView.getHeight());
                 } else {
                     Log.e(TAG, "Tooltip cannot be shown, root view is invalid or has been closed.");
