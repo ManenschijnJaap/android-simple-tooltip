@@ -109,8 +109,6 @@ Antes de enviar seu PR, execute a checagem do gradle.
 ./gradlew build connectedCheck
 ```
 
-## Faça uma doação
-
 [![Doar](https://www.paypalobjects.com/pt_BR/BR/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=TM8BGN6PJF6SS)
 
 ## Problemas conhecidos
@@ -118,6 +116,8 @@ Antes de enviar seu PR, execute a checagem do gradle.
 1. Se fechar a `Dialog/Activity` sem que a Tooltip seja encerrada, pode ocorrer o erro `java.lang.IllegalArgumentException: Could not lock surface`. Este erro ocorre devido a animação continuar após o fechamento da `Dialog/Activity`. (Este erro não afeta no funcionamento do programa.)
 
 2. Se chamar `tooltip.show()` após a `Activity/Dialog` ser encerrada, pode ocorrer o erro `android.view.WindowLeaked: Activity has leaked window android.widget.PopupWindow$PopupViewContainer that was originally added here`. [Leia mais.](http://stackoverflow.com/questions/2850573/activity-has-leaked-window-that-was-originally-added) (Este erro não afeta no funcionamento do programa.)
+
+3. À partir da API 24 o Android mudou o comportamento da `PopupWindow` em relação a propriedade [`setClippingEnabled`](https://developer.android.com/reference/android/widget/PopupWindow.html#setClippingEnabled(boolean)), isso faz com que a Popup possa ficar cortada se não couber na tela. [Leia mais](https://github.com/douglasjunior/android-simple-tooltip/issues/40).
 
 ## Licença
 
