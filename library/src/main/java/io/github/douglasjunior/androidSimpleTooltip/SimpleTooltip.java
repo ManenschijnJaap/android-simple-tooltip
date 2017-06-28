@@ -201,7 +201,9 @@ public class SimpleTooltip implements PopupWindow.OnDismissListener {
         mOverlay = mTransparentOverlay ? new View(mContext) : new OverlayView(mContext, mAnchorView, mHighlightShape, mOverlayOffset);
         mOverlay.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         mOverlay.setOnTouchListener(mOverlayTouchListener);
+        mOverlay.setAlpha(0);
         mRootView.addView(mOverlay);
+        mOverlay.animate().alpha(1).setDuration(200).start();
     }
 
     private PointF calculePopupLocation() {
